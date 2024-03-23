@@ -18,7 +18,7 @@ function updateRating(id, rating) {
   });
 }
 function removeMovie(id) {
-  movies.value.filter((movie) => movie.id !== id);
+  movies.value = movies.value.filter((movie) => movie.id !== id);
 }
 function editMovie(id) {
   currentMovie.value = movies.value.find((movie) => movie.id === id);
@@ -26,6 +26,7 @@ function editMovie(id) {
 }
 function saveMovie(data) {
   const isNew = !!movies.value.find((movie) => movie.id === data.id);
+
   if (!isNew) {
     addMovie(data);
   } else {
@@ -33,13 +34,13 @@ function saveMovie(data) {
   }
 }
 function updateMovie(data) {
-  movies.value = movies.value.map((m) => {
-    if (m.id === data.id) {
-      data.rating = m.rating;
-      return data;
+  movies.value = movies.value.map((movie) => {
+    if (movie.id === data.id) {
+      movie = data;
     }
-    return data;
+    return movie;
   });
+
   hideForm();
 }
 function addMovie(data) {
@@ -78,14 +79,12 @@ function removeRatings() {
     <AppModal
       v-if="showMovieForm"
       :title="currentMovie?.id ? 'Edit Movie' : 'Add Movie'"
-      @close="hideForm()"
-    >
+      @close="hideForm()">
       <MovieForm
         v-if="showMovieForm"
         @update:modelValue="saveMovie"
         :modelValue="currentMovie"
-        @cancel="hideForm"
-      />
+        @cancel="hideForm" />
     </AppModal>
     <div class="movie-actions-list-wrapper">
       <div class="movie-actions-list-info">
@@ -97,8 +96,7 @@ function removeRatings() {
       <div class="movie-actions-list-actions">
         <button
           class="self-end movie-actions-list-action-button button-primary justify-self-end"
-          @click="removeRatings"
-        >
+          @click="removeRatings">
           Remove Ratings
         </button>
         <button
@@ -108,8 +106,7 @@ function removeRatings() {
             'button-disabled': showMovieForm,
           }"
           @click="showForm"
-          :disabled="showMovieForm"
-        >
+          :disabled="showMovieForm">
           Add Movie
         </button>
       </div>
@@ -121,8 +118,7 @@ function removeRatings() {
         :movie="movie"
         @edit="editMovie"
         @remove="removeMovie"
-        v-bind:update:rating="updateRating"
-      />
+        @update:rating="updateRating" />
     </div>
   </div>
 </template>
